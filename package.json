@@ -2,6 +2,7 @@
   "name": "shopify-form-app",
   "version": "1.0.0",
   "description": "Shopify form app (Node.js) - fixed form, stores responses in PostgreSQL, sends emails",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
