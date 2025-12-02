@@ -1,0 +1,54 @@
+<!-- Snippet to paste in Shopify page. Adjust action to your hosted app URL -->
+<form id="shopifyCustomForm">
+  <input type="hidden" name="shop" value="{{ shop.permanent_domain }}">
+  <label>Nombre completo (requerido)</label><br/>
+  <input name="nombre_completo" required /><br/>
+
+  <label>Email (requerido)</label><br/>
+  <input type="email" name="email" required /><br/>
+
+  <label>Teléfono</label><br/>
+  <input name="telefono" /><br/>
+
+  <label>Documento de identidad</label><br/>
+  <input name="documento_identidad" /><br/>
+
+  <label>Fecha de compra</label><br/>
+  <input type="date" name="fecha_compra" /><br/>
+
+  <label>Número de factura</label><br/>
+  <input name="numero_factura" /><br/>
+
+  <label>Tipo de requerimiento</label><br/>
+  <select name="tipo_requerimiento">
+    <option value="consulta">Consulta</option>
+    <option value="reclamo">Reclamo</option>
+    <option value="devolucion">Devolución</option>
+    <option value="otro">Otro</option>
+  </select><br/>
+
+  <label>Detalles de tu requerimiento</label><br/>
+  <textarea name="detalles_requerimiento"></textarea><br/>
+
+  <button type="submit">Enviar</button>
+</form>
+
+<script>
+document.getElementById('shopifyCustomForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target).entries());
+  // send to your hosted app endpoint
+  const res = await fetch('/submit-form', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  });
+  const json = await res.json();
+  if(json.ok){
+    alert('Enviado. Tu ID: ' + json.submission_id);
+    e.target.reset();
+  } else {
+    alert('Error: ' + (json.error || 'no env'));
+  }
+});
+</script>

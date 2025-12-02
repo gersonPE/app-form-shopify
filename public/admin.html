@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Admin - Form Responses</title></head>
+<body>
+  <h1>Respuestas del formulario</h1>
+  <p>Esta vista requiere autenticación básica. Use las credenciales ADMIN_USER / ADMIN_PASS definidas en .env</p>
+  <div id="list"></div>
+  <script>
+    async function load(){
+      try {
+        const res = await fetch('/api/responses', { credentials: 'include' });
+        if(res.status === 401){
+          document.getElementById('list').innerText = 'Autenticación requerida (HTTP Basic).';
+          return;
+        }
+        const data = await res.json();
+        const html = data.map(r => {
+          return `<div style="border-bottom:1px solid #ddd;padding:8px">
+            <strong>${r.submission_id}</strong> — ${r.nombre_completo} — ${r.created_at}<br/>
+            <small>Email: (no almacenado) | Tel: ${r.telefono || '-'} | Tipo: ${r.tipo_requerimiento || '-'}</small>
+            <p>${r.detalles_requerimiento || ''}</p>
+          </div>`;
+        }).join('');
+        document.getElementById('list').innerHTML = html;
+      } catch(err){
+        document.getElementById('list').innerText = 'Error cargando: ' + err;
+      }
+    }
+    load();
+  </script>
+</body>
+</html>

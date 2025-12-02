@@ -1,0 +1,8 @@
+Pasos rápidos:
+
+1. Configura variables en .env
+2. npm install
+3. npm run migrate
+4. npm start
+
+Si usas Railway / Render: crea un proyecto, añade variables de entorno con las mismas claves del .env y sube el repo.
