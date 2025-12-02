@@ -18,17 +18,29 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve static frontend (form snippet & admin)
+// Static (ignorar si no existe carpeta en production)
 app.use(express.static(path.join(__dirname, "public")));
 
 // API routes
 app.use("/api", adminApiRoute);
 app.use("/", submitFormRoute);
 
-// Health
+// Health check para Railway
 app.get("/health", (req, res) => res.json({ ok: true }));
 
-const PORT = process.env.PORT || 3000;
+// Landing básico para GET /
+app.get("/", (req, res) => {
+  res.send("Server running OK 🚀");
+});
+
+// EL PUERTO DEBE SER SOLO process.env.PORT
+const PORT = process.env.PORT;
+
+if (!PORT) {
+  console.error("❌ ERROR: process.env.PORT no está definido (Railway lo envía automáticamente)");
+  process.exit(1);
+}
+
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
