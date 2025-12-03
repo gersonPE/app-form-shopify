@@ -18,9 +18,7 @@ app.use(helmet());
 // CORS FIX
 app.use(cors({
   origin: [
-    "https://lupebeauty.com",
-    "https://*.lupebeauty.com",
-    "https://admin.shopify.com"
+    "https://lupebeauty.com"
   ],
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
@@ -30,9 +28,12 @@ app.options("*", cors());
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "https://lupebeauty.com");
-  res.header("Access-Control-Allow-Origin", "https://admin.shopify.com");
   res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    // Responder inmediatamente los preflight
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
   next();
 });
 
