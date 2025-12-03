@@ -52,8 +52,12 @@ submitFormRoute.post("/submit-form", async (req, res) => {
 
     res.json({ ok:true, submission_id });
 
-  } catch (err) {
-    console.error("submit-form error:", err);
-    res.status(500).json({ ok:false, error: "Internal error" });
-  }
+ } catch (err) {
+  console.error("❌ ERROR en /submit-form:");
+  console.error("Mensaje:", err.message);
+  console.error("Stack:", err.stack);
+  console.error("Body recibido:", req.body);
+
+  res.status(500).json({ ok:false, error: err.message || "Internal error" });
+}
 });
