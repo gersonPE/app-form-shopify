@@ -14,11 +14,19 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(helmet());
+
+// CORS FIX
 app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST"],
-  allowedHeaders: ["Content-Type"],
+  origin: [
+    "https://lupebeauty.com",
+    "https://*.lupebeauty.com",
+    "https://admin.shopify.com"
+  ],
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
+app.options("*", cors());
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
