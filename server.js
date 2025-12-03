@@ -33,9 +33,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Static (ignorar si no existe carpeta en production)
 app.use(express.static(path.join(__dirname, "public")));
 
-// API routes
-app.use("/api", adminApiRoute);
-app.use("/", submitFormRoute);
 
 // Health check para Railway
 app.get("/health", (req, res) => res.json({ ok: true }));
@@ -44,6 +41,10 @@ app.get("/health", (req, res) => res.json({ ok: true }));
 app.get("/", (req, res) => {
   res.send("Server running OK 🚀");
 });
+
+// API routes
+app.use("/api", adminApiRoute);
+app.use("/", submitFormRoute);
 
 
 // EL PUERTO DEBE SER SOLO process.env.PORT
