@@ -14,7 +14,11 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"],
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -32,6 +36,7 @@ app.get("/health", (req, res) => res.json({ ok: true }));
 app.get("/", (req, res) => {
   res.send("Server running OK 🚀");
 });
+
 
 // EL PUERTO DEBE SER SOLO process.env.PORT
 const PORT = process.env.PORT;
