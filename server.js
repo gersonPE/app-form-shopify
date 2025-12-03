@@ -1,6 +1,5 @@
 import express from "express";
 import bodyParser from "body-parser";
-import helmet from "helmet";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -13,55 +12,48 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-app.use(helmet());
 
-// CORS FIX
-app.use(cors({
-  origin: [
-    "https://lupebeauty.com"
-  ],
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
-app.options("*", cors());
-
-
+// ---------------------
+//   CORS FIX DEFINITIVO
+// ---------------------
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "https://lupebeauty.com");
-  res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    // Responder inmediatamente los preflight
+  res.header("Access-Control-Allow-Credentials", "false");
+
   if (req.method === "OPTIONS") {
-    return res.status(200).end();
+    return res.status(200).send("OK");
   }
+
   next();
 });
+
+// remove helmet (causes cors issues in preflight)
+// app.use(helmet());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Static (ignorar si no existe carpeta en production)
+// Static (optional)
 app.use(express.static(path.join(__dirname, "public")));
 
+// Routes
+app.use("/api", adminApiRoute);
+app.use("/", submitFormRoute);
 
-// Health check para Railway
+// Health check
 app.get("/health", (req, res) => res.json({ ok: true }));
 
-// Landing básico para GET /
+// Landing
 app.get("/", (req, res) => {
   res.send("Server running OK 🚀");
 });
 
-// API routes
-app.use("/api", adminApiRoute);
-app.use("/", submitFormRoute);
-
-
-// EL PUERTO DEBE SER SOLO process.env.PORT
+// Port
 const PORT = process.env.PORT;
-
 if (!PORT) {
-  console.error("❌ ERROR: process.env.PORT no está definido (Railway lo envía automáticamente)");
+  console.error("❌ process.env.PORT missing");
   process.exit(1);
 }
 
